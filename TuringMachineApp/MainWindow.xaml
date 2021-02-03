@@ -1,0 +1,30 @@
+﻿<Window x:Class="TuringMachineApp.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:TuringMachineApp"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="450" Width="800" MinWidth="660" MinHeight="356">
+    <Grid x:Name="grid">
+        <Button Content="Open Turing Machine file..." Width="150" Height="20" Click="NewWinBtn_Click" Margin="10,10,0,0" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+        <ScrollViewer Margin="10,50,10,33">
+            <Grid>
+                <StackPanel x:Name="TMContainer"/>
+            </Grid>
+        </ScrollViewer>
+        <Separator Height="10" Margin="10,35,10,0" VerticalAlignment="Top"/>
+        <Button x:Name="StartAllBtn" Content="Start all machines" HorizontalAlignment="Left" Margin="165,10,0,0" VerticalAlignment="Top" Width="100" Click="StartAllBtn_Click"/>
+        <Button x:Name="StopAllBtn" Content="Stop All Machines" HorizontalAlignment="Left" Margin="270,10,0,0" VerticalAlignment="Top" Width="100" Click="StopAllBtn_Click"/>
+        <Button x:Name="StepAllBtn" Content="Step all machines" HorizontalAlignment="Left" Margin="375,10,0,0" VerticalAlignment="Top" Width="100" Click="StepAllBtn_Click"/>
+        <Button x:Name="CloseAllBtn" Content="Close all machines" HorizontalAlignment="Left" Margin="480,10,10,0" VerticalAlignment="Top" Width="150" Click="CloseAllBtn_Click"/>
+        <StatusBar Height="23" Margin="0" VerticalAlignment="Bottom">
+            <StatusBarItem>
+                <TextBlock x:Name="StatusBarText">
+                    Ready
+                </TextBlock>
+            </StatusBarItem>
+        </StatusBar>
+
+    </Grid>
+</Window>
