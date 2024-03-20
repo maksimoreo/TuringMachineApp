@@ -7,6 +7,8 @@ using System.Threading;
 using System.Windows.Threading;
 using System.Diagnostics;
 
+using TuringMachineEmulator;
+
 namespace TuringMachineApp
 {
     class TuringMachineThread
@@ -39,7 +41,7 @@ namespace TuringMachineApp
 
         public void SetWorking(bool working)
         {
-            lock(lock_working)
+            lock (lock_working)
             {
                 this.control_working = working;
             }
@@ -47,7 +49,7 @@ namespace TuringMachineApp
 
         public void AddSteps()
         {
-            lock(lock_steps)
+            lock (lock_steps)
             {
                 this.control_steps++;
             }
@@ -55,7 +57,7 @@ namespace TuringMachineApp
 
         public void StopAndDelete()
         {
-            lock(lock_stopAndDelete)
+            lock (lock_stopAndDelete)
             {
                 control_stopAndDelete = true;
             }

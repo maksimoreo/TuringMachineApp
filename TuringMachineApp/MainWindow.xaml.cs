@@ -15,6 +15,8 @@ using System.Windows.Shapes;
 
 using System.Diagnostics;
 
+using TuringMachineEmulator;
+
 namespace TuringMachineApp
 {
     /// <summary>
@@ -44,8 +46,8 @@ namespace TuringMachineApp
             string filename = openFileDialog.FileName;
             Debug.WriteLine("selected file: " + filename);
 
-            TuringMachineApp.TuringMachine tm = new TuringMachineApp.TuringMachine();
-            TuringMachineApp.TuringMachine.ParseError parseError = tm.ReadFromFile(filename);
+            TuringMachine tm = new TuringMachine();
+            TuringMachine.ParseError parseError = tm.ReadFromFile(filename);
 
             if (parseError != null)
             {
@@ -61,7 +63,7 @@ namespace TuringMachineApp
                         Debug.WriteLine("|  " + parseError.message);
                         parseError = parseError.causedBy;
                     }
-                    
+
                     return;
                 }
 

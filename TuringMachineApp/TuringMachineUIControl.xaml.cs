@@ -15,7 +15,7 @@ using System.Windows.Shapes;
 
 using System.Diagnostics; // Debug
 
-using TuringMachineApp;
+using TuringMachineEmulator;
 
 namespace TuringMachineApp
 {
