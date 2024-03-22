@@ -9,12 +9,12 @@ public class TuringMachine
 
     // Information about current state
     private List<char> tape;
-    public string Tape { get => new string(tape.ToArray()); }
+    public string Tape { get => new string(tape.ToArray()); set => tape = value.ToList(); }
     private string currentState;
-    public string CurrentState => currentState;
+    public string CurrentState { get => currentState; set => currentState = value; }
 
     private int currentPosition;
-    public int CurrentPosition => currentPosition;
+    public int CurrentPosition { get => currentPosition; set => currentPosition = value; }
 
     private int steps = 0;
     public int Steps => steps;
@@ -35,7 +35,7 @@ public class TuringMachine
         }
     }
 
-    private List<Command> commands = new List<Command>();
+    public List<Command> commands = new List<Command>();
 
     public bool Step()
     {
@@ -78,11 +78,6 @@ public class TuringMachine
     }
 
     #region Parsing
-    // Parsing info
-    public string Path { get; private set; }
-
-    public string FileName { get; private set; }
-
     public class ParseError
     {
         public readonly string message;
@@ -94,124 +89,6 @@ public class TuringMachine
             this.causedBy = causedBy;
         }
     }
-
-    public ParseError ReadFromFile(string path)
-    {
-        if (!File.Exists(path))
-        {
-            return new ParseError("File doesn't exist.");
-        }
-
-        string[] fileLines = File.ReadAllLines(path);
-        int lineIndex = 0;
-        ParseError parseError;
-        commands.Clear();
-
-        this.Path = path;
-        this.FileName = System.IO.Path.GetFileName(path);
-
-        // Read tape
-        parseError = ReadTape(fileLines, ref tape, ref lineIndex);
-        if (parseError != null)
-        {
-            return new ParseError("Error while reading TAPE from file.", parseError);
-        }
-
-        // Read current position
-        parseError = ReadCurrentPosition(fileLines, ref currentPosition, ref lineIndex);
-        if (parseError != null)
-        {
-            return new ParseError("Error while reading CURRENT POSITION from file.", parseError);
-        }
-
-        // Read command list
-        parseError = ReadCommandList(fileLines, ref commands, ref lineIndex);
-        if (parseError != null)
-        {
-            return new ParseError("Error while reading COMMAND LIST from file.", parseError);
-        }
-
-        // Reset other parameters
-        currentState = "0";
-
-        // Success
-        return null;
-    }
-
-
-    private static ParseError ReadTape(string[] fileLines, ref List<char> tape, ref int lineIndex)
-    {
-        SkipImptyLines(fileLines, ref lineIndex);
-
-        if (lineIndex >= fileLines.Length)
-        {
-            return new ParseError("End of file reached before TAPE was readed.");
-        }
-
-        tape = new List<char>(fileLines[lineIndex]);
-        lineIndex++;
-        return null;
-    }
-
-    private static ParseError ReadCurrentPosition(string[] fileLines, ref int currentPosition, ref int lineIndex)
-    {
-        SkipImptyLines(fileLines, ref lineIndex);
-
-        if (lineIndex >= fileLines.Length)
-        {
-            return new ParseError("End of file reached before CURRENT POSITION was readed.");
-        }
-
-        try
-        {
-            currentPosition = Convert.ToInt32(fileLines[lineIndex]) - 1;
-        }
-        catch (System.FormatException)
-        {
-            return new ParseError("Incorrect format for CURRENT POSITION (int): \"" + fileLines[lineIndex] + "\"");
-        }
-
-        lineIndex++;
-        return null;
-    }
-
-    private static ParseError ReadCommandList(string[] filelines, ref List<Command> commands, ref int lineIndex)
-    {
-        commands = new List<Command>();
-
-        while (lineIndex < filelines.Length)
-        {
-            SkipImptyLines(filelines, ref lineIndex);
-            if (lineIndex >= filelines.Length) // eof
-                break;
-
-            string line = filelines[lineIndex];
-
-            Command command = null;
-            ParseError commandParseError = Command.ParseCommand(line, ref command);
-
-            if (commandParseError == null)
-            {
-                commands.Add(command);
-            }
-            else
-            {
-                return new ParseError(
-                    "Error while processing line " + (lineIndex + 1).ToString() + ": \"" + line + "\"",
-                    commandParseError);
-            }
-
-            lineIndex++;
-        }
-
-        return null;
-    }
-
-    private static void SkipImptyLines(string[] filelines, ref int lineIndex)
-    {
-        for (; lineIndex < filelines.Length && string.IsNullOrWhiteSpace(filelines[lineIndex]); lineIndex++) { }
-    }
-
     #endregion
 
     public void PrintCommandList()

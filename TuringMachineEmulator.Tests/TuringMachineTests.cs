@@ -3,19 +3,9 @@
 public class TuringMachineTests
 {
     [Fact]
-    public void ReadFromFile_InitializesMachine()
-    {
-        TuringMachine tm = new();
-        var error = tm.ReadFromFile("Samples/SampleMachine1.txt");
-
-        Assert.Null(error);
-    }
-
-    [Fact]
     public void Step_UpdatesTape()
     {
-        TuringMachine tm = new();
-        Assert.Null(tm.ReadFromFile("Samples/SampleMachine1.txt"));
+        TuringMachine tm = Parser.Parse("Samples/SampleMachine1.txt");
 
         for (int i = 0; i < 16; i++)
         {
@@ -31,8 +21,7 @@ public class TuringMachineTests
     [Fact]
     public void Step_StopsWhenReachesEnd()
     {
-        TuringMachine tm = new();
-        Assert.Null(tm.ReadFromFile("Samples/SampleMachine1.txt"));
+        TuringMachine tm = Parser.Parse("Samples/SampleMachine1.txt");
 
         for (int i = 0; i < 1000; i++)
         {
@@ -49,8 +38,7 @@ public class TuringMachineTests
     [Fact]
     public void Step_WorksWithSampleMachine2()
     {
-        TuringMachine tm = new();
-        Assert.Null(tm.ReadFromFile("Samples/SampleMachine2.txt"));
+        TuringMachine tm = Parser.Parse("Samples/SampleMachine2.txt");
 
         for (int i = 0; i < 2000; i++)
         {
@@ -61,6 +49,23 @@ public class TuringMachineTests
         Assert.Equal("M00000000N00000034P", tm.Tape);
         Assert.Equal(8, tm.CurrentPosition);
         Assert.Equal("H", tm.CurrentState);
+        Assert.Equal(TuringMachine.Status.NoInstruction, tm.status);
+    }
+
+    [Fact]
+    public void WorksWith_BusyBeaver3()
+    {
+        TuringMachine tm = Parser.Parse("Samples/BusyBeaver3.txt");
+
+        for (int i = 0; i < 14; i++)
+        {
+            tm.Step();
+        }
+
+        Assert.Equal(13, tm.Steps);
+        Assert.Equal("00000000000001111110000000000000", tm.Tape);
+        Assert.Equal(15, tm.CurrentPosition);
+        Assert.Equal("HALT", tm.CurrentState);
         Assert.Equal(TuringMachine.Status.NoInstruction, tm.status);
     }
 }

@@ -1,20 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-
 using System.Diagnostics;
-
+using System.Windows;
 using TuringMachineEmulator;
 
 namespace TuringMachineApp
@@ -46,28 +33,23 @@ namespace TuringMachineApp
             string filename = openFileDialog.FileName;
             Debug.WriteLine("selected file: " + filename);
 
-            TuringMachine tm = new TuringMachine();
-            TuringMachine.ParseError parseError = tm.ReadFromFile(filename);
+            TuringMachine tm;
 
-            if (parseError != null)
+            try
             {
-                // Display error
-                MessageBox.Show(this, "Error while reading from file!", "Parsing Error", MessageBoxButton.OK, MessageBoxImage.Exclamation, MessageBoxResult.OK);
-
-                if (parseError != null)
-                {
-                    Debug.WriteLine("|  Klaida skaitant is failo " + filename + ':');
-
-                    while (parseError != null)
-                    {
-                        Debug.WriteLine("|  " + parseError.message);
-                        parseError = parseError.causedBy;
-                    }
-
-                    return;
-                }
-
-                return;
+                tm = Parser.Parse(filename);
+            }
+            catch (Parser.ParseException ex)
+            {
+                string message = $"Invalid file: {ex.Message}";
+                MessageBox.Show(this, message, "Parsing Error", MessageBoxButton.OK, MessageBoxImage.Exclamation, MessageBoxResult.OK);
+                throw;
+            }
+            catch (Exception ex)
+            {
+                string message = $"Error while reading from file: {ex.Message}";
+                MessageBox.Show(this, message, "Unexpected Error", MessageBoxButton.OK, MessageBoxImage.Exclamation, MessageBoxResult.OK);
+                throw;
             }
 
             TuringMachineUIControl newTMWindow = new TuringMachineUIControl();

@@ -25,10 +25,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Samples\" />
-  </ItemGroup>
-
-  <ItemGroup>
+    <None Update="Samples\BusyBeaver3.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Update="Samples\SampleMachine1.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

@@ -7,7 +7,15 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TuringMachineApp", "TuringM
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TuringMachineEmulator", "TuringMachineEmulator\TuringMachineEmulator.csproj", "{7C22C065-E8C8-4904-A7C9-FDFAD33F25E7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TuringMachineEmulator.Tests", "TuringMachineEmulator.Tests\TuringMachineEmulator.Tests.csproj", "{CD1D37C7-469F-451A-9C41-D63240F71A77}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TuringMachineEmulator.Tests", "TuringMachineEmulator.Tests\TuringMachineEmulator.Tests.csproj", "{CD1D37C7-469F-451A-9C41-D63240F71A77}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{98B4F749-1339-49D4-A60D-52900B4E887A}"
+	ProjectSection(SolutionItems) = preProject
+		Samples\1.txt = Samples\1.txt
+		Samples\2.txt = Samples\2.txt
+		Samples\3.txt = Samples\3.txt
+		Samples\4.txt = Samples\4.txt
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

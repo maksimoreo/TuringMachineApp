@@ -1,9 +1,13 @@
+# Tape
 0000_
 
+# Initial state
+0
 
-1
+# Initial position
+0
 
-
+# Commands
 0 0 0 R 0
 0 1 1 R 0
 0 _ _ L 1
