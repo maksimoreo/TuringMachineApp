@@ -7,5 +7,9 @@ public record class Command(
     TuringMachine.Direction Direction,
     string NewState)
 {
-    public override string ToString() => $"{CurrentState} {CurrentSymbol} {NewSymbol} {Direction} {NewState}";
+    public override string ToString()
+    {
+        string directionText = Direction == TuringMachine.Direction.Left ? "L" : "R";
+        return $"{CurrentState} {CurrentSymbol} {NewSymbol} {directionText} {NewState}";
+    }
 }

@@ -11,13 +11,12 @@ namespace TuringMachineApp
     /// </summary>
     public partial class MainWindow : Window
     {
-
-        private List<TuringMachineUIControl> tmList = new List<TuringMachineUIControl>();
+        private readonly List<TuringMachineUIControl> tmList = [];
         public MainWindow()
         {
             InitializeComponent();
             UpdateControls();
-            this.StatusBarText.Text = "Ready";
+            StatusBarText.Text = "Ready";
         }
 
         private void NewWinBtn_Click(object sender, RoutedEventArgs e)
@@ -52,8 +51,10 @@ namespace TuringMachineApp
                 throw;
             }
 
-            TuringMachineUIControl newTMWindow = new TuringMachineUIControl();
-            newTMWindow.parentWindow = this;
+            TuringMachineUIControl newTMWindow = new()
+            {
+                parentWindow = this
+            };
             newTMWindow.Initialize(tm, filename);
 
             this.TMContainer.Children.Add(newTMWindow);
@@ -81,9 +82,9 @@ namespace TuringMachineApp
                         idleMachines++;
                 }
 
-                StartAllBtn.IsEnabled = idleMachines > 0 ? true : false;
-                StopAllBtn.IsEnabled = workingMachines > 0 ? true : false;
-                StepAllBtn.IsEnabled = idleMachines > 0 ? true : false;
+                StartAllBtn.IsEnabled = idleMachines > 0;
+                StopAllBtn.IsEnabled = workingMachines > 0;
+                StepAllBtn.IsEnabled = idleMachines > 0;
                 CloseAllBtn.IsEnabled = true;
             }
         }

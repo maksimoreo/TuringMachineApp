@@ -82,8 +82,8 @@ public class Parser
     {
         return data.ToLower() switch
         {
-            "l" or "left" or "<" => TuringMachine.Direction.L,
-            "r" or "right" or ">" => TuringMachine.Direction.R,
+            "l" or "left" or "<" => TuringMachine.Direction.Left,
+            "r" or "right" or ">" => TuringMachine.Direction.Right,
             _ => throw new InvalidDirectionException(),
         };
     }
