@@ -63,11 +63,11 @@ public class Parser
         string[] tokens = data.Split(' ', StringSplitOptions.RemoveEmptyEntries);
 
         return new Command(
-            currentState: tokens[0],
-            currentSymbol: ParseSymbol(tokens[1]),
-            newSymbol: ParseSymbol(tokens[2]),
-            direction: ParseDirection(tokens[3]),
-            newState: tokens[4]
+            CurrentState: tokens[0],
+            CurrentSymbol: ParseSymbol(tokens[1]),
+            NewSymbol: ParseSymbol(tokens[2]),
+            Direction: ParseDirection(tokens[3]),
+            NewState: tokens[4]
         );
     }
 
