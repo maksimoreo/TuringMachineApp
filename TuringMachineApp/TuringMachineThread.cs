@@ -7,9 +7,9 @@ namespace TuringMachineApp
     class TuringMachineThread
     {
         public delegate void UpdateUICallback(Command nextCommand, string tape, string state, int currentPosition, int cursorOffsetFromTapePartialBeginning);
-        public UpdateUICallback UpdateUI;
 
-        readonly TuringMachine tm;
+        private readonly UpdateUICallback UpdateUI;
+        private readonly TuringMachine tm;
 
         // Methods
         public TuringMachineThread(TuringMachine tm, UpdateUICallback updateUIFunction)
@@ -17,26 +17,27 @@ namespace TuringMachineApp
             this.tm = tm;
             UpdateUI = updateUIFunction;
             TryUpdateUI();
-            Thread thread = new Thread(new ThreadStart(TMThread));
-            thread.IsBackground = true;
+            Thread thread = new(new ThreadStart(TMThread))
+            {
+                IsBackground = true
+            };
 
             thread.Start();
         }
 
-        // Thread
         #region Thread Control
-        private object lock_working = new object();
+        private readonly object lock_working = new();
         private bool control_working = false;
-        private object lock_steps = new object();
+        private readonly object lock_steps = new();
         private int control_steps = 0;
-        private object lock_stopAndDelete = new object();
+        private readonly object lock_stopAndDelete = new();
         private bool control_stopAndDelete = false;
 
         public void SetWorking(bool working)
         {
             lock (lock_working)
             {
-                this.control_working = working;
+                control_working = working;
             }
         }
 
@@ -44,7 +45,7 @@ namespace TuringMachineApp
         {
             lock (lock_steps)
             {
-                this.control_steps++;
+                control_steps++;
             }
         }
 

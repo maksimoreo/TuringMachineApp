@@ -106,14 +106,12 @@ namespace TuringMachineApp
         {
             foreach (var tm in tmList)
                 tm.Start();
-            //UpdateControls();
         }
 
         private void StopAllBtn_Click(object sender, RoutedEventArgs e)
         {
             foreach (var tm in tmList)
                 tm.Stop();
-            //UpdateControls();
         }
 
         private void StepAllBtn_Click(object sender, RoutedEventArgs e)

@@ -245,6 +245,5 @@ public class TuringMachineTests
         Assert.Equal("00011111100", tm.ExtractTapeAroundCursor(left: 5, right: 5));
         Assert.Equal(-1, tm.Position);
         Assert.Equal("HALT", tm.State);
-        Assert.Equal(TuringMachine.Status.NoInstruction, tm.status);
     }
 }

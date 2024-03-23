@@ -7,9 +7,6 @@ public class TuringMachine
     public const int DEFAULT_CHUNK_SIZE = 1024;
     public const char DEFAULT_EMPTY_CHAR = '\0';
 
-    public enum Status { Ready, NoInstruction, TapeBorder }
-    public Status status { get; private set; } = Status.Ready;
-
     public string State { get; set; }
 
     /// <summary>
@@ -114,14 +111,8 @@ public class TuringMachine
 
     public bool Step()
     {
-        if (status != Status.Ready) return false;
-
         Command? command = FindNextCommand();
-        if (command is null)
-        {
-            status = Status.NoInstruction;
-            return false;
-        }
+        if (command is null) return false;
 
         // Execute command
         CurrentSymbol = command.NewSymbol;

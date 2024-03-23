@@ -10,9 +10,6 @@ namespace TuringMachineApp
     /// </summary>
     public partial class TuringMachineUIControl : UserControl
     {
-        private string fileName;
-        public string FileName => fileName;
-
         public MainWindow parentWindow;
 
         private bool isWorking = false;
@@ -21,10 +18,10 @@ namespace TuringMachineApp
         private TuringMachineThread tmThread;
 
         // UI
-        private string CurrentStateLabelText { set => this.CurrentStateLabel.Content = "State: " + value; }
-        private string CurrentPositionLabelText { set => this.CurrentPositionLabel.Content = "Position: " + value; }
-        private string CurrentStepLabelText { set => this.StepLabel.Content = "Step: " + value; }
-        private string CurrentStatusLabelText { set => this.StatusLabel.Content = "Status: " + value; }
+        private string CurrentStateLabelText { set => CurrentStateLabel.Content = "State: " + value; }
+        private string CurrentPositionLabelText { set => CurrentPositionLabel.Content = "Position: " + value; }
+        private string CurrentStepLabelText { set => StepLabel.Content = "Step: " + value; }
+        private string CurrentStatusLabelText { set => StatusLabel.Content = "Status: " + value; }
 
         private void SetTape(string tape, int cursorOffset)
         {
@@ -41,40 +38,33 @@ namespace TuringMachineApp
         #region Start Stop
         public void Start()
         {
-            if (!isWorking)
-            {
-                tmThread.SetWorking(true);
-                isWorking = true;
-                StepButton.IsEnabled = false;
-                StartStopButton.Content = "Stop";
-                CurrentStatusLabelText = "Running";
-                parentWindow.UpdateControls();
+            if (isWorking) return;
 
-                // Send Message to worker thread
-            }
+            tmThread.SetWorking(true);
+            isWorking = true;
+            StepButton.IsEnabled = false;
+            StartStopButton.Content = "Stop";
+            CurrentStatusLabelText = "Running";
+            parentWindow.UpdateControls();
         }
 
         public void Stop()
         {
-            if (isWorking)
-            {
-                tmThread.SetWorking(false);
-                isWorking = false;
-                StepButton.IsEnabled = true;
-                StartStopButton.Content = "Start";
-                CurrentStatusLabelText = "Idle (Stopped)";
-                parentWindow.UpdateControls();
+            if (!isWorking) return;
 
-                // Send Message to worker thread
-            }
+            tmThread.SetWorking(false);
+            isWorking = false;
+            StepButton.IsEnabled = true;
+            StartStopButton.Content = "Start";
+            CurrentStatusLabelText = "Idle (Stopped)";
+            parentWindow.UpdateControls();
         }
         #endregion
 
         public void Initialize(TuringMachine tm, string name)
         {
-            this.TMNameLabel.Content = name;
+            TMNameLabel.Content = name;
             tmThread = new TuringMachineThread(tm, UpdateUI);
-            UpdateUIBasic();
             CurrentStatusLabelText = "Idle (Not started)";
         }
 
@@ -103,29 +93,8 @@ namespace TuringMachineApp
             }
         }
 
-        public void UpdateUIBasic()
-        {
-            //if (tm != null)
-            //{
-            //    this.TMNameLabel.Content = tm.FileName;
-            //    this.TapeLabel.Content = tm.Tape;
-            //    CurrentPositionLabelText = tm.CurrentPosition.ToString();
-            //    CurrentStateLabelText = tm.CurrentState;
-            //    CurrentStepLabelText = tm.Steps.ToString();
-            //}
-            //else
-            //{
-            //    this.TMNameLabel.Content = "<Empty>";
-            //    this.TapeLabel.Content = "";
-            //    CurrentPositionLabelText = "-";
-            //    CurrentStateLabelText = "-";
-            //    CurrentStepLabelText = "-";
-            //}
-        }
-
         public void Step()
         {
-            // Send Message to worker thread
             tmThread.AddSteps();
         }
 
