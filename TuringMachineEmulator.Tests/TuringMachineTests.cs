@@ -179,16 +179,14 @@ public class TuringMachineTests
     {
         TuringMachine tm = Parser.Parse("Samples/SampleMachine1.txt");
 
-        for (int i = 0; i < 10; i++)
-        {
-            tm.Step();
-        }
+        tm.TryStep(10);
 
         Assert.Multiple(
             () => Assert.Equal(10, tm.Steps),
             () => Assert.Equal("0000010_000", tm.ExtractTapeAroundCursor(5)),
             () => Assert.Equal(-2, tm.Position),
-            () => Assert.Equal("1", tm.State)
+            () => Assert.Equal("1", tm.State),
+            () => Assert.Equal("1 1 0 L 1", tm.FindNextCommand()?.ToString())
         );
     }
 
@@ -197,16 +195,14 @@ public class TuringMachineTests
     {
         TuringMachine tm = Parser.Parse("Samples/SampleMachine1.txt");
 
-        for (int i = 0; i < 100; i++)
-        {
-            tm.Step();
-        }
+        tm.TryStep(100);
 
         Assert.Multiple(
             () => Assert.Equal(100, tm.Steps),
             () => Assert.Equal("0011011_0000000", tm.ExtractTapeAroundCursor(7)),
             () => Assert.Equal(0, tm.Position),
-            () => Assert.Equal("0", tm.State)
+            () => Assert.Equal("0", tm.State),
+            () => Assert.Equal("0 _ _ L 1", tm.FindNextCommand()?.ToString())
         );
     }
 
@@ -215,16 +211,14 @@ public class TuringMachineTests
     {
         TuringMachine tm = Parser.Parse("Samples/SampleMachine2.txt");
 
-        for (int i = 0; i < 2000; i++)
-        {
-            tm.Step();
-        }
+        tm.TryStep(2000);
 
         Assert.Multiple(
             () => Assert.Equal(1165, tm.Steps),
             () => Assert.Equal("0000000M00000000N00000034P00000", tm.ExtractTapeAroundCursor(15)),
             () => Assert.Equal(8, tm.Position),
-            () => Assert.Equal("H", tm.State)
+            () => Assert.Equal("H", tm.State),
+            () => Assert.Null(tm.FindNextCommand())
         );
     }
 
@@ -236,14 +230,25 @@ public class TuringMachineTests
             .Deserialize<SerializableTuringMachine>(File.ReadAllText("Samples/BusyBeaver3.json"))!
             .ToTuringMachine();
 
-        for (int i = 0; i < 14; i++)
-        {
-            tm.Step();
-        }
+        tm.Step(13);
 
-        Assert.Equal(13, tm.Steps);
-        Assert.Equal("00011111100", tm.ExtractTapeAroundCursor(left: 5, right: 5));
-        Assert.Equal(-1, tm.Position);
-        Assert.Equal("HALT", tm.State);
+        Assert.Multiple(
+            () => Assert.Equal(13, tm.Steps),
+            () => Assert.Equal("00011111100", tm.ExtractTapeAroundCursor(left: 5, right: 5)),
+            () => Assert.Equal(-1, tm.Position),
+            () => Assert.Equal("HALT", tm.State),
+            () => Assert.Null(tm.FindNextCommand())
+        );
+    }
+
+    [Fact]
+    public void Step_ThrowsNoCommandException()
+    {
+        TuringMachine tm =
+            JsonSerializer
+            .Deserialize<SerializableTuringMachine>(File.ReadAllText("Samples/BusyBeaver3.json"))!
+            .ToTuringMachine();
+
+        Assert.Throws<TuringMachine.NoCommandException>(() => tm.Step(14));
     }
 }

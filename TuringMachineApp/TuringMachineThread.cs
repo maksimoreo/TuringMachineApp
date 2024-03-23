@@ -86,7 +86,7 @@ namespace TuringMachineApp
                 if (steps > 0 || working)
                 {
                     Thread.Sleep(20);
-                    tm.Step();
+                    tm.TryStep();
                     TryUpdateUI();
                 }
                 else

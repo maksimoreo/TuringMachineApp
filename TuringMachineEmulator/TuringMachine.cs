@@ -4,6 +4,13 @@ namespace TuringMachineEmulator;
 
 public class TuringMachine
 {
+    public class NoCommandException : Exception
+    {
+        public NoCommandException() { }
+        public NoCommandException(string message) : base(message) { }
+        public NoCommandException(string message, Exception innerException) : base(message, innerException) { }
+    }
+
     public const int DEFAULT_CHUNK_SIZE = 1024;
     public const char DEFAULT_EMPTY_CHAR = '\0';
 
@@ -109,7 +116,23 @@ public class TuringMachine
 
     public Command? FindNextCommand() => commands.Find(x => x.CurrentState == State && x.CurrentSymbol == CurrentSymbol);
 
-    public bool Step()
+    public void Step(int times)
+    {
+        if (TryStep(times) != times) throw new NoCommandException();
+    }
+
+    public void Step()
+    {
+        if (!TryStep()) throw new NoCommandException();
+    }
+
+    public int TryStep(int times)
+    {
+        int i;
+        for (i = 0; i < times && TryStep(); i++) ;
+        return i;
+    }
+    public bool TryStep()
     {
         Command? command = FindNextCommand();
         if (command is null) return false;
