@@ -1,5 +1,5 @@
 # Tape
-0000_
+_
 
 # Initial state
 0

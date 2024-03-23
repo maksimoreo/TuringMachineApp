@@ -25,7 +25,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="Samples\BusyBeaver3.txt">
+    <None Update="Samples\BusyBeaver3.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="Samples\SampleMachine1.txt">

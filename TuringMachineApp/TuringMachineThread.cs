@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Threading;
-using System.Windows.Threading;
-using System.Diagnostics;
+﻿using System.Threading;
 
 using TuringMachineEmulator;
 
@@ -105,7 +98,7 @@ namespace TuringMachineApp
 
         private void TryUpdateUI()
         {
-            System.Windows.Application.Current.Dispatcher.Invoke(UpdateUI, tm.status, tm.Tape, tm.CurrentState, tm.CurrentPosition);
+            System.Windows.Application.Current.Dispatcher.Invoke(UpdateUI, tm.status, tm.ExtractTapeAroundCursor(10), tm.CurrentState, tm.CurrentPosition);
         }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Text.Json;
 using System.Windows;
 using TuringMachineEmulator;
 
@@ -36,7 +37,11 @@ namespace TuringMachineApp
 
             try
             {
-                tm = Parser.Parse(filename);
+                tm =
+                    JsonSerializer
+                    .Deserialize<SerializableTuringMachine>(System.IO.File.ReadAllText(filename))
+                    .ToTuringMachine();
+                //tm = Parser.Parse(filename);
             }
             catch (Parser.ParseException ex)
             {

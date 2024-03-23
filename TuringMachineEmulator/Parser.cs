@@ -36,12 +36,13 @@ public class Parser
         int initialPosition = int.Parse(NextNonEmptyLine(stream));
         List<Command> commands = ParseCommands(stream);
 
-        return new()
+        return new(
+            initialState: initialState,
+            initialTape: tape,
+            initialPosition: initialPosition,
+            emptyChar: '0')
         {
-            Tape = tape,
-            CurrentState = initialState,
             commands = commands,
-            CurrentPosition = initialPosition,
         };
     }
 
@@ -78,12 +79,12 @@ public class Parser
         return data[0];
     }
 
-    public static TuringMachine.Direction ParseDirection(string data)
+    public static Direction ParseDirection(string data)
     {
         return data.ToLower() switch
         {
-            "l" or "left" or "<" => TuringMachine.Direction.Left,
-            "r" or "right" or ">" => TuringMachine.Direction.Right,
+            "l" or "left" or "<" => Direction.Left,
+            "r" or "right" or ">" => Direction.Right,
             _ => throw new InvalidDirectionException(),
         };
     }
