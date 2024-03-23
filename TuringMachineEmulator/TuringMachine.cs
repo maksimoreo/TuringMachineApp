@@ -10,9 +10,11 @@ public class TuringMachine
     public enum Status { Ready, NoInstruction, TapeBorder }
     public Status status { get; private set; } = Status.Ready;
 
-    public string CurrentState { get; set; }
-    public int CurrentPosition { get; set; }
+    public string State { get; set; }
 
+    /// <summary>
+    /// Used for testing/debugging. For UI, use ExtractTapeAroundCursor instead.
+    /// </summary>
     public string FullTape { get => string.Join("", ChunkedTape.Select(chunk => new string(chunk))); }
     public LinkedList<char[]> ChunkedTape { get; } = new LinkedList<char[]>();
     public LinkedListNode<char[]> TapeNode { get; private set; }
@@ -31,15 +33,12 @@ public class TuringMachine
         int chunkSize = DEFAULT_CHUNK_SIZE,
         char emptyChar = DEFAULT_EMPTY_CHAR)
     {
-        if (chunkSize <= 0)
-        {
-            throw new ArgumentException("must be greater than 0", nameof(chunkSize));
-        }
+        ArgumentOutOfRangeException.ThrowIfLessThan(chunkSize, 1, nameof(chunkSize));
 
         ChunkSize = chunkSize;
         EmptyChar = emptyChar;
 
-        CurrentState = initialState;
+        State = initialState;
 
         TapeNode = ChunkedTape.AddFirst(CreateChunk());
         ChunkedTape.AddFirst(CreateChunk());
@@ -61,7 +60,7 @@ public class TuringMachine
         ChunkSize = chunkSize;
         EmptyChar = emptyChar;
 
-        CurrentState = initialState;
+        State = initialState;
 
         if (initialTape.Length >= 1)
         {
@@ -111,13 +110,13 @@ public class TuringMachine
 
     public List<Command> commands = [];
 
+    public Command? FindNextCommand() => commands.Find(x => x.CurrentState == State && x.CurrentSymbol == CurrentSymbol);
+
     public bool Step()
     {
         if (status != Status.Ready) return false;
 
-        // Find command with current state and symbol
-        Command? command = commands.Find(x => x.CurrentState == CurrentState && x.CurrentSymbol == CurrentSymbol);
-
+        Command? command = FindNextCommand();
         if (command is null)
         {
             status = Status.NoInstruction;
@@ -126,7 +125,7 @@ public class TuringMachine
 
         // Execute command
         CurrentSymbol = command.NewSymbol;
-        CurrentState = command.NewState;
+        State = command.NewState;
         int newPosition = LocalPosition + (command.Direction == Direction.Left ? -1 : 1);
         if (newPosition < 0)
         {

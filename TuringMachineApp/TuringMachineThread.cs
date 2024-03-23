@@ -6,16 +6,16 @@ namespace TuringMachineApp
 {
     class TuringMachineThread
     {
-        public delegate void UpdateUICallback(TuringMachine.Status status, string tape, string state, int currentPosition);
+        public delegate void UpdateUICallback(Command nextCommand, string tape, string state, int currentPosition, int cursorOffsetFromTapePartialBeginning);
         public UpdateUICallback UpdateUI;
 
-        TuringMachine tm;
+        readonly TuringMachine tm;
 
         // Methods
         public TuringMachineThread(TuringMachine tm, UpdateUICallback updateUIFunction)
         {
             this.tm = tm;
-            this.UpdateUI = updateUIFunction;
+            UpdateUI = updateUIFunction;
             TryUpdateUI();
             Thread thread = new Thread(new ThreadStart(TMThread));
             thread.IsBackground = true;
@@ -98,7 +98,9 @@ namespace TuringMachineApp
 
         private void TryUpdateUI()
         {
-            System.Windows.Application.Current.Dispatcher.Invoke(UpdateUI, tm.status, tm.ExtractTapeAroundCursor(10), tm.CurrentState, tm.CurrentPosition);
+            int offsetAroundCursor = 10;
+            System.Windows.Application.Current.Dispatcher.Invoke(() =>
+                UpdateUI(tm.FindNextCommand(), tm.ExtractTapeAroundCursor(offsetAroundCursor), tm.State, tm.Position, offsetAroundCursor));
         }
     }
 }

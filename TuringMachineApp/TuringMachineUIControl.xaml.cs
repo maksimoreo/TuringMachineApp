@@ -1,19 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-
-using System.Diagnostics; // Debug
 
 using TuringMachineEmulator;
 
@@ -40,17 +26,11 @@ namespace TuringMachineApp
         private string CurrentStepLabelText { set => this.StepLabel.Content = "Step: " + value; }
         private string CurrentStatusLabelText { set => this.StatusLabel.Content = "Status: " + value; }
 
-        private void SetTape(string tape, int pos)
+        private void SetTape(string tape, int cursorOffset)
         {
-            if (pos > 0)
-                TextBeforePos.Text = tape.Substring(0, pos);
-            else
-                TextBeforePos.Text = "";
-            TextCurrentPos.Text = tape[pos].ToString();
-            if (pos < tape.Length - 1)
-                TextAfterPos.Text = tape.Substring(pos + 1);
-            else
-                TextAfterPos.Text = "";
+            TextBeforePos.Text = tape[..(cursorOffset - 1)];
+            TextCurrentPos.Text = tape[cursorOffset].ToString();
+            TextAfterPos.Text = tape[(cursorOffset + 1)..];
         }
 
         public TuringMachineUIControl()
@@ -98,19 +78,28 @@ namespace TuringMachineApp
             CurrentStatusLabelText = "Idle (Not started)";
         }
 
-        public void UpdateUI(TuringMachine.Status status, string tape, string currentState, int currentPosition)
+        public void UpdateUI(
+            Command nextCommand,
+            string tape,
+            string currentState,
+            int currentPosition,
+            int cursorOffsetFromTapePartialBeginning)
         {
-            SetTape(tape, currentPosition);
+            SetTape(tape, cursorOffsetFromTapePartialBeginning);
             CurrentStateLabelText = currentState;
             CurrentPositionLabelText = currentPosition.ToString();
 
-            if (status == TuringMachine.Status.NoInstruction || status == TuringMachine.Status.TapeBorder)
+            if (nextCommand is null)
             {
                 // Block controls
                 Stop();
                 StepButton.IsEnabled = false;
                 StartStopButton.IsEnabled = false;
-                CurrentStatusLabelText = "Done (" + status.ToString() + ")";
+                CurrentStatusLabelText = "No instruction";
+            }
+            else
+            {
+                CurrentStatusLabelText = nextCommand.ToString();
             }
         }
 

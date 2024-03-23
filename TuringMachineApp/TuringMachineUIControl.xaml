@@ -8,7 +8,7 @@
     <Grid Background="{DynamicResource {x:Static SystemColors.WindowBrushKey}}" Margin="0">
         <Label x:Name="TMNameLabel" Content="Turing Machine Name" Margin="10,10,10,0" VerticalAlignment="Top"/>
         <ScrollViewer ScrollViewer.HorizontalScrollBarVisibility="Visible" ScrollViewer.VerticalScrollBarVisibility="Disabled" Margin="10,41,10,0" HorizontalAlignment="Stretch" Height="40" VerticalAlignment="Top">
-            <TextBlock>
+            <TextBlock TextAlignment="Center">
                 <Run x:Name="TextBeforePos" FontFamily="Courier New"></Run>
                 <Run x:Name="TextCurrentPos" FontFamily="Courier New" Foreground="White" Background="DarkRed"/>
                 <Run x:Name="TextAfterPos" FontFamily="Courier New"></Run>
