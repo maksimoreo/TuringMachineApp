@@ -42,7 +42,7 @@ public class Parser
             initialPosition: initialPosition,
             emptyChar: '0')
         {
-            commands = commands,
+            Commands = commands,
         };
     }
 
@@ -68,8 +68,7 @@ public class Parser
             CurrentSymbol: ParseSymbol(tokens[1]),
             NewSymbol: ParseSymbol(tokens[2]),
             Direction: ParseDirection(tokens[3]),
-            NewState: tokens[4]
-        );
+            NewState: tokens[4]);
     }
 
     public static char ParseSymbol(string data)

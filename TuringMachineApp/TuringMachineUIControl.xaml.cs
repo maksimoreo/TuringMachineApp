@@ -10,17 +10,21 @@ namespace TuringMachineApp
     /// </summary>
     public partial class TuringMachineUIControl : UserControl
     {
-        public MainWindow parentWindow;
+        public MainWindow ParentWindow { get; init; }
 
         private bool isWorking = false;
+
         public bool IsWorking => isWorking;
 
         private TuringMachineThread tmThread;
 
         // UI
         private string CurrentStateLabelText { set => CurrentStateLabel.Content = "State: " + value; }
+
         private string CurrentPositionLabelText { set => CurrentPositionLabel.Content = "Position: " + value; }
+
         private string CurrentStepLabelText { set => StepLabel.Content = "Step: " + value; }
+
         private string CurrentStatusLabelText { set => StatusLabel.Content = "Status: " + value; }
 
         private void SetTape(string tape, int cursorOffset)
@@ -45,7 +49,7 @@ namespace TuringMachineApp
             StepButton.IsEnabled = false;
             StartStopButton.Content = "Stop";
             CurrentStatusLabelText = "Running";
-            parentWindow.UpdateControls();
+            ParentWindow.UpdateControls();
         }
 
         public void Stop()
@@ -57,7 +61,7 @@ namespace TuringMachineApp
             StepButton.IsEnabled = true;
             StartStopButton.Content = "Start";
             CurrentStatusLabelText = "Idle (Stopped)";
-            parentWindow.UpdateControls();
+            ParentWindow.UpdateControls();
         }
         #endregion
 
@@ -110,7 +114,7 @@ namespace TuringMachineApp
 
         private void CloseButton_Click(object sender, RoutedEventArgs e)
         {
-            parentWindow.CloseTM(this);
+            ParentWindow.CloseTM(this);
         }
 
         private void StartStopButton_Click(object sender, RoutedEventArgs e)

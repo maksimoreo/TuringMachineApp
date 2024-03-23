@@ -1,6 +1,10 @@
 ﻿namespace TuringMachineEmulator;
 
-public enum Direction { Left, Right };
+public enum Direction
+{
+    Left,
+    Right,
+}
 
 public static class DirectionExtensions
 {

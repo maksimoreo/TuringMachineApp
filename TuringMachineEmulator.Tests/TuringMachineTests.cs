@@ -17,6 +17,7 @@ public class TuringMachineTests
         Assert.Equal("0123456789", tm.FullTape);
         Assert.Equal(7, tm.Position);
     }
+
     [Fact]
     public void TuringMachine_WhenInitialTapeIsLargerThanChunkSize_CreatesWithSpecifiedTape()
     {
@@ -186,8 +187,7 @@ public class TuringMachineTests
             () => Assert.Equal("0000010_000", tm.ExtractTapeAroundCursor(5)),
             () => Assert.Equal(-2, tm.Position),
             () => Assert.Equal("1", tm.State),
-            () => Assert.Equal("1 1 0 L 1", tm.FindNextCommand()?.ToString())
-        );
+            () => Assert.Equal("1 1 0 L 1", tm.FindNextCommand()?.ToString()));
     }
 
     [Fact]
@@ -202,8 +202,7 @@ public class TuringMachineTests
             () => Assert.Equal("0011011_0000000", tm.ExtractTapeAroundCursor(7)),
             () => Assert.Equal(0, tm.Position),
             () => Assert.Equal("0", tm.State),
-            () => Assert.Equal("0 _ _ L 1", tm.FindNextCommand()?.ToString())
-        );
+            () => Assert.Equal("0 _ _ L 1", tm.FindNextCommand()?.ToString()));
     }
 
     [Fact]
@@ -218,8 +217,7 @@ public class TuringMachineTests
             () => Assert.Equal("0000000M00000000N00000034P00000", tm.ExtractTapeAroundCursor(15)),
             () => Assert.Equal(8, tm.Position),
             () => Assert.Equal("H", tm.State),
-            () => Assert.Null(tm.FindNextCommand())
-        );
+            () => Assert.Null(tm.FindNextCommand()));
     }
 
     [Fact]
@@ -237,8 +235,7 @@ public class TuringMachineTests
             () => Assert.Equal("00011111100", tm.ExtractTapeAroundCursor(left: 5, right: 5)),
             () => Assert.Equal(-1, tm.Position),
             () => Assert.Equal("HALT", tm.State),
-            () => Assert.Null(tm.FindNextCommand())
-        );
+            () => Assert.Null(tm.FindNextCommand()));
     }
 
     [Fact]

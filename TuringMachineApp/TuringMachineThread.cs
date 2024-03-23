@@ -4,34 +4,36 @@ using TuringMachineEmulator;
 
 namespace TuringMachineApp
 {
-    class TuringMachineThread
+    internal class TuringMachineThread
     {
         public delegate void UpdateUICallback(Command nextCommand, string tape, string state, int currentPosition, int cursorOffsetFromTapePartialBeginning);
 
-        private readonly UpdateUICallback UpdateUI;
+        private readonly UpdateUICallback updateUI;
         private readonly TuringMachine tm;
 
         // Methods
         public TuringMachineThread(TuringMachine tm, UpdateUICallback updateUIFunction)
         {
             this.tm = tm;
-            UpdateUI = updateUIFunction;
+            updateUI = updateUIFunction;
             TryUpdateUI();
             Thread thread = new(new ThreadStart(TMThread))
             {
-                IsBackground = true
+                IsBackground = true,
             };
 
             thread.Start();
         }
 
         #region Thread Control
+#pragma warning disable SA1310 // Field names should not contain underscore
         private readonly object lock_working = new();
         private bool control_working = false;
         private readonly object lock_steps = new();
         private int control_steps = 0;
         private readonly object lock_stopAndDelete = new();
         private bool control_stopAndDelete = false;
+#pragma warning restore SA1310 // Field names should not contain underscore
 
         public void SetWorking(bool working)
         {
@@ -101,7 +103,7 @@ namespace TuringMachineApp
         {
             int offsetAroundCursor = 10;
             System.Windows.Application.Current.Dispatcher.Invoke(() =>
-                UpdateUI(tm.FindNextCommand(), tm.ExtractTapeAroundCursor(offsetAroundCursor), tm.State, tm.Position, offsetAroundCursor));
+                updateUI(tm.FindNextCommand(), tm.ExtractTapeAroundCursor(offsetAroundCursor), tm.State, tm.Position, offsetAroundCursor));
         }
     }
 }

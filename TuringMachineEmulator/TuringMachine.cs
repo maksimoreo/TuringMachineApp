@@ -17,20 +17,25 @@ public class TuringMachine
     public string State { get; set; }
 
     /// <summary>
-    /// Used for testing/debugging. For UI, use ExtractTapeAroundCursor instead.
+    /// Gets full tape. Used for testing/debugging. For UI, use ExtractTapeAroundCursor instead.
     /// </summary>
-    public string FullTape { get => string.Join("", ChunkedTape.Select(chunk => new string(chunk))); }
+    public string FullTape => string.Join(string.Empty, ChunkedTape.Select(chunk => new string(chunk)));
+
     public LinkedList<char[]> ChunkedTape { get; } = new LinkedList<char[]>();
+
     public LinkedListNode<char[]> TapeNode { get; private set; }
 
     public int Steps { get; set; }
 
-    public readonly int ChunkSize;
-    public readonly char EmptyChar;
+    public int ChunkSize { get; init; }
+
+    public char EmptyChar { get; init; }
 
     public int LocalPosition { get; private set; }
+
     public int TapeNodePosition { get; private set; }
-    public int Position { get => TapeNodePosition * ChunkSize + LocalPosition; }
+
+    public int Position => TapeNodePosition * ChunkSize + LocalPosition;
 
     public TuringMachine(
         string initialState,
@@ -71,11 +76,7 @@ public class TuringMachine
             // First full chunks
             var chunks = Enumerable
                 .Range(0, initialTape.Length / ChunkSize)
-                .Select(i =>
-                    initialTape
-                        .Substring(i * ChunkSize, ChunkSize)
-                        .ToCharArray()
-                );
+                .Select(i => initialTape.Substring(i * ChunkSize, ChunkSize).ToCharArray());
 
             // Last partial chunk
             int lastChunkSize = initialTape.Length % ChunkSize;
@@ -112,9 +113,9 @@ public class TuringMachine
         private set => TapeNode.Value[LocalPosition] = value;
     }
 
-    public List<Command> commands = [];
+    public List<Command> Commands { get; init; } = [];
 
-    public Command? FindNextCommand() => commands.Find(x => x.CurrentState == State && x.CurrentSymbol == CurrentSymbol);
+    public Command? FindNextCommand() => Commands.Find(x => x.CurrentState == State && x.CurrentSymbol == CurrentSymbol);
 
     public void Step(int times)
     {
@@ -129,9 +130,13 @@ public class TuringMachine
     public int TryStep(int times)
     {
         int i;
-        for (i = 0; i < times && TryStep(); i++) ;
+        for (i = 0; i < times && TryStep(); i++)
+        {
+        }
+
         return i;
     }
+
     public bool TryStep()
     {
         Command? command = FindNextCommand();
@@ -169,9 +174,9 @@ public class TuringMachine
     /// <summary>
     /// Extracts partial tape around cursor. Does not create additional chunks if steps out of existing chunks.
     /// </summary>
-    /// <param name="left">How many characters to extract to the left</param>
-    /// <param name="right">How many characters to extract to the right</param>
-    /// <returns>Extracted tape part of size exactly `left + 1 + right`</returns>
+    /// <param name="left">How many characters to extract to the left.</param>
+    /// <param name="right">How many characters to extract to the right.</param>
+    /// <returns>Extracted tape part of size exactly `left + 1 + right`.</returns>
     public string ExtractTapeAroundCursor(int left, int right)
     {
         StringBuilder sb = new();
@@ -186,7 +191,7 @@ public class TuringMachine
             List<string> leftParts = [];
 
             // First partial chunk
-            leftParts.Add(new string(TapeNode.Value[..LocalPosition]) ?? "");
+            leftParts.Add(new string(TapeNode.Value[..LocalPosition]) ?? string.Empty);
             left -= LocalPosition;
 
             // Middle full chunks
@@ -213,7 +218,7 @@ public class TuringMachine
                 }
             }
 
-            sb.Append(string.Join("", leftParts.AsEnumerable().Reverse()));
+            sb.Append(string.Join(string.Empty, leftParts.AsEnumerable().Reverse()));
         }
 
         sb.Append(CurrentSymbol);
@@ -262,9 +267,10 @@ public class TuringMachine
     }
 
     private char[] CreateChunk() => Enumerable.Repeat(EmptyChar, ChunkSize).ToArray();
+
     private LinkedListNode<char[]> GetOrCreatePrevious(LinkedListNode<char[]> node) =>
         node.Previous ?? ChunkedTape.AddBefore(node, CreateChunk());
-    private LinkedListNode<char[]> GetOrCreateNext(LinkedListNode<char[]> node) =>
-            node.Next ?? ChunkedTape.AddAfter(node, CreateChunk());
 
+    private LinkedListNode<char[]> GetOrCreateNext(LinkedListNode<char[]> node) =>
+        node.Next ?? ChunkedTape.AddAfter(node, CreateChunk());
 }

@@ -8,11 +8,12 @@ using TuringMachineEmulator;
 namespace TuringMachineApp
 {
     /// <summary>
-    /// Interaction logic for MainWindow.xaml
+    /// Interaction logic for MainWindow.xaml.
     /// </summary>
     public partial class MainWindow : Window
     {
         private readonly List<TuringMachineUIControl> tmList = [];
+
         public MainWindow()
         {
             InitializeComponent();
@@ -24,7 +25,7 @@ namespace TuringMachineApp
         {
             // Get filename from file dialog
             var openFileDialog = new Microsoft.Win32.OpenFileDialog();
-            Nullable<bool> result = openFileDialog.ShowDialog();
+            bool? result = openFileDialog.ShowDialog();
             if (result == false)
             {
                 return;
@@ -41,7 +42,8 @@ namespace TuringMachineApp
                     JsonSerializer
                     .Deserialize<SerializableTuringMachine>(System.IO.File.ReadAllText(filename))
                     .ToTuringMachine();
-                //tm = Parser.Parse(filename);
+
+                // tm = Parser.Parse(filename);
             }
             catch (Parser.ParseException ex)
             {
@@ -58,7 +60,7 @@ namespace TuringMachineApp
 
             TuringMachineUIControl newTMWindow = new()
             {
-                parentWindow = this
+                ParentWindow = this,
             };
             newTMWindow.Initialize(tm, filename);
 
