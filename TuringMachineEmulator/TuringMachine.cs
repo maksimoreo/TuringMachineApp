@@ -21,7 +21,7 @@ public class TuringMachine
     /// </summary>
     public string FullTape => string.Join(string.Empty, ChunkedTape.Select(chunk => new string(chunk)));
 
-    public LinkedList<char[]> ChunkedTape { get; } = new LinkedList<char[]>();
+    public LinkedList<char[]> ChunkedTape { get; }
 
     public LinkedListNode<char[]> TapeNode { get; private set; }
 
@@ -70,41 +70,43 @@ public class TuringMachine
         EmptyChar = emptyChar;
 
         State = initialState;
-
-        if (initialTape.Length >= 1)
-        {
-            // First full chunks
-            var chunks = Enumerable
-                .Range(0, initialTape.Length / ChunkSize)
-                .Select(i => initialTape.Substring(i * ChunkSize, ChunkSize).ToCharArray());
-
-            // Last partial chunk
-            int lastChunkSize = initialTape.Length % ChunkSize;
-            if (lastChunkSize != 0)
-            {
-                var partialChunk = initialTape[^lastChunkSize..];
-                char[] chunk = CreateChunk();
-                for (int i = 0; i < partialChunk.Length; i++)
-                {
-                    chunk[i] = partialChunk[i];
-                }
-
-                chunks = chunks.Append(chunk);
-            }
-
-            ChunkedTape = new LinkedList<char[]>(chunks);
-            TapeNode = ChunkedTape.First!;
-        }
-        else
-        {
-            TapeNode = ChunkedTape.AddFirst(CreateChunk());
-        }
+        ChunkedTape = CreateTape(initialTape);
+        TapeNode = ChunkedTape.First!;
 
         TapeNodePosition = initialPosition / ChunkSize;
         LocalPosition = initialPosition % ChunkSize;
 
         for (int i = 0; i < TapeNodePosition; i++)
             TapeNode = GetOrCreateNext(TapeNode);
+    }
+
+    private LinkedList<char[]> CreateTape(string initialTape)
+    {
+        if (initialTape.Length == 0)
+        {
+            return new LinkedList<char[]>([CreateChunk()]);
+        }
+
+        // First full chunks
+        var chunks = Enumerable
+            .Range(0, initialTape.Length / ChunkSize)
+            .Select(i => initialTape.Substring(i * ChunkSize, ChunkSize).ToCharArray());
+
+        // Last partial chunk
+        int lastChunkSize = initialTape.Length % ChunkSize;
+        if (lastChunkSize != 0)
+        {
+            var partialChunk = initialTape[^lastChunkSize..];
+            char[] chunk = CreateChunk();
+            for (int i = 0; i < partialChunk.Length; i++)
+            {
+                chunk[i] = partialChunk[i];
+            }
+
+            chunks = chunks.Append(chunk);
+        }
+
+        return new LinkedList<char[]>(chunks);
     }
 
     public char CurrentSymbol
@@ -142,7 +144,13 @@ public class TuringMachine
         Command? command = FindNextCommand();
         if (command is null) return false;
 
-        // Execute command
+        ExecuteCommand(command);
+        Steps++;
+        return true;
+    }
+
+    private void ExecuteCommand(Command command)
+    {
         CurrentSymbol = command.NewSymbol;
         State = command.NewState;
         int newPosition = LocalPosition + (command.Direction == Direction.Left ? -1 : 1);
@@ -162,10 +170,6 @@ public class TuringMachine
         {
             LocalPosition = newPosition;
         }
-
-        Steps++;
-
-        return true;
     }
 
     public string ExtractTapeAroundCursor(int extractInEachDirection) =>
@@ -259,11 +263,6 @@ public class TuringMachine
         }
 
         return sb.ToString();
-    }
-
-    public void MoveLeft(int steps)
-    {
-        throw new NotImplementedException();
     }
 
     private char[] CreateChunk() => Enumerable.Repeat(EmptyChar, ChunkSize).ToArray();
